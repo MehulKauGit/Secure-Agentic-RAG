@@ -45,3 +45,4 @@ desktop.ini
 dist/
 build/
 *.egg-info/
+secure_agentic_rag_architecture.md
