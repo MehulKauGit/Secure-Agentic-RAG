@@ -1,92 +1,157 @@
-# Secure Agentic RAG Platform
+# 🛡️ Secure Agentic RAG Platform
 
-> A production-style agentic RAG assistant with a built-in adversary. Multi-agent orchestration (LangGraph) exposes tools via MCP, a toggleable defense layer screens retrieved content and tool outputs for prompt injection, and an evaluation harness + dashboard prove — with numbers — that the defense reduces attack success without wrecking task utility. **Fully local: Ollama + Chroma, zero API spend.**
-
-See [`secure_agentic_rag_architecture.md`](./secure_agentic_rag_architecture.md) for the full architecture & implementation guide.
+> A production-style agentic RAG assistant with a built-in adversary. Multi-agent orchestration (**LangGraph**) exposes tools via **MCP**, a toggleable defense layer screens retrieved content and tool outputs for prompt injection, and an evaluation harness + dashboard prove — with numbers, not vibes — that the defense reduces attack success without degrading task utility. **Fully local: Ollama + Chroma, zero API spend.**
 
 ---
 
-## Prerequisites
+## 🏛️ System Architecture
 
-You need three things on any machine before you start:
+```
+┌──────────────────────────────────────────────────────────────────┐
+│              USER (CLI / minimal chat interface)                 │
+└────────────────────────────────┬─────────────────────────────────┘
+                                  │ query
+                     ┌────────────▼────────────┐
+                     │      Orchestrator        │
+                     │  (LangGraph supervisor)  │
+                     └───┬──────────────────┬───┘
+                         │ delegates         │ delegates
+              ┌──────────▼────────┐  ┌───────▼─────────────┐
+              │  Retriever agent   │  │  Tool-use agent      │
+              └──────────┬─────────┘  └───────┬───────────────┘
+                         │                    │
+              ┌──────────▼────────┐  ┌────────▼──────────────┐
+              │  Chroma vector DB │  │   MCP tool server       │
+              │  (document corpus,│  │  calculator · file      │
+              │  attack-laced +   │  │  lookup · send_email    │
+              │  clean chunks)    │  │  (canary, logged-only)  │
+              └──────────┬────────┘  └────────┬──────────────┘
+                         │                    │
+                         ▼                    ▼
+              ┌────────────────────────────────────────────┐
+              │          Defense screening layer             │
+              │  heuristics + LLM judge, per-hook toggle     │
+              │  emits a DefenseVerdict per chunk/tool-result│
+              └───────────────────┬────────────────────────┘
+                                  │ back to orchestrator (loop)
+                                  ▼
+                       ┌─────────────────────┐
+                       │  Synthesizer agent   │
+                       └──────────┬───────────┘
+                                  │ final answer
+                                  ▼
+                       ┌─────────────────────┐
+                       │  Trajectory logger   │──► data/runs/{run_id}/
+                       └─────────────────────┘
 
-| Tool | Install |
+     ┌─────────────────────────────────────────────────────┐
+     │   Evaluation harness (offline, batch)                 │
+     │   replays dev + held-out + mutation attack sets,       │
+     │   and clean tasks, across N defense configs             │
+     └───────────────────────────┬───────────────────────────┘
+                                 │ summary.json per run
+                                 ▼
+                     ┌───────────────────────┐
+                     │   Streamlit dashboard   │
+                     │  ASR / utility / Δ /    │
+                     │  latency, before-after   │
+                     └───────────────────────┘
+```
+
+---
+
+## ⚡ Quick Start (Any PC, from scratch)
+
+### Prerequisites
+
+| Tool | Installation |
 |---|---|
 | **Git** | [git-scm.com](https://git-scm.com/downloads) |
-| **uv** (Python package manager) | `winget install astral-sh.uv` or see [docs.astral.sh/uv](https://docs.astral.sh/uv/getting-started/installation/) |
-| **Ollama** (local LLM runtime) | [ollama.com/download](https://ollama.com/download) — run the installer, then `ollama serve` |
+| **uv** | `winget install astral-sh.uv` or see [docs.astral.sh/uv](https://docs.astral.sh/uv/) |
+| **Ollama** | [ollama.com/download](https://ollama.com/download) |
 
-> **No Python installation needed.** `uv` manages Python automatically based on `.python-version`.
+> **No manual Python install needed!** `uv` manages Python automatically based on `.python-version`.
 
----
-
-## Quick Start (any PC, from scratch)
+### Setup & Run in 4 Commands
 
 ```powershell
-# 1. Clone
-git clone https://github.com/<your-handle>/Secure-agentic-RAG-app.git
-cd Secure-agentic-RAG-app
+# 1. Clone the repository
+git clone https://github.com/MehulKauGit/Secure-Agentic-RAG.git
+cd Secure-Agentic-RAG
 
-# 2. Install Python + all dependencies (one command)
+# 2. Sync all dependencies into isolated virtualenv (one command)
 uv sync
 
-# 3. Pull the required Ollama models
-ollama pull qwen2.5:7b-instruct-q4_K_M   # primary LLM
-ollama pull nomic-embed-text              # embeddings
-# Optional fallback (low-VRAM machines)
-# ollama pull llama3.2:3b
+# 3. Pull the local models (in separate terminal with ollama serve running)
+ollama pull qwen2.5:7b-instruct-q4_K_M
+ollama pull nomic-embed-text
 
-# 4. Activate the virtual environment (PowerShell)
-.\.venv\Scripts\Activate.ps1
-
-# 5. Verify everything works
-uv run python -c "import langgraph, chromadb, mcp; print('All good!')"
-```
-
-> If `ollama serve` isn't running as a background service, open a separate terminal and run it before step 5.
-
----
-
-## Development Commands
-
-```powershell
-# Run tests
+# 4. Run the automated test suite
 uv run pytest
-
-# Lint
-uv run ruff check src/
-
-# Type-check
-uv run mypy src/
 ```
 
 ---
 
-## Project Structure
+## 🔬 Running the Platform
 
-See the architecture doc for a full breakdown. Top-level layout:
+### 1. Interactive CLI & Real-time Query
+```powershell
+# Ingest clean knowledge base into ChromaDB
+uv run python -m src.main --ingest
+
+# Run an inquiry with active defense screening
+uv run python -m src.main --query "What is the per diem meal allowance in Austin?" --heuristic --judge
+```
+
+### 2. Batch Evaluation Harness (ASR & Utility Benchmark)
+```powershell
+# Evaluate baseline (no defense)
+uv run python -m src.eval.runner --config none --split all
+
+# Evaluate combined defense (heuristics + LLM judge)
+uv run python -m src.eval.runner --config combined --split all
+```
+*Evaluations output snapshot configs, raw `trajectories.jsonl`, and aggregate `summary.json` inside `data/runs/{run_id}/`.*
+
+### 3. Interactive Streamlit Dashboard
+```powershell
+uv run streamlit run src/dashboard/app.py
+```
+Open [http://localhost:8501](http://localhost:8501) to compare benchmark runs side-by-side, inspect trajectories, and test live adversarial payloads in the playground.
+
+---
+
+## 📁 Project Structure
 
 ```
-├── configs/        # model + defense + experiment configs (YAML)
-├── corpus/         # clean documents + attack corpus (dev / held-out / mutations)
+Secure-Agentic-RAG/
+├── configs/
+│   ├── models.yaml                    # Model + embedding configuration
+│   ├── defense.yaml                   # Heuristic rule bank + LLM judge template
+│   └── experiments/                   # Experiment presets (none, heuristic, judge, combined)
+├── corpus/
+│   ├── documents/                     # Clean knowledge base documents
+│   ├── attacks/                       # Adversarial corpus
+│   │   ├── dev/                       # 24 attacks for defense tuning
+│   │   ├── held_out/                  # 11 held-out attacks for generalization testing
+│   │   └── mutations/                 # Evasion variants (casing, leetspeak, spacing, preambles)
+│   └── attack_schema.json             # JSON schema validation for all attacks
 ├── src/
-│   ├── agents/     # LangGraph graph, state schema, agent nodes
-│   ├── defense/    # heuristic screen + LLM judge
-│   ├── mcp_server/ # MCP tool server (calculator, file_lookup, send_email canary)
-│   ├── retrieval/  # ChromaDB wrapper + ingestion
-│   ├── eval/       # evaluation harness + metrics
-│   └── dashboard/  # Streamlit dashboard
-├── data/           # generated at runtime — NOT committed to git
-│   ├── chroma/     # vector store persistence
-│   └── runs/       # trajectory logs + summary.json per eval run
-└── tests/
+│   ├── agents/                        # LangGraph StateGraph, supervisor, retriever, tool, synthesizer
+│   ├── defense/                       # Heuristic regex screening & LLM judge nodes
+│   ├── mcp_server/                    # FastMCP tool server (calculator, file_lookup, send_email canary)
+│   ├── retrieval/                     # ChromaDB vector store wrapper & ingestion
+│   ├── eval/                          # Eval runner, success criteria, metrics, mutations
+│   └── dashboard/                     # Streamlit comparison dashboard
+├── data/                              # Runtime databases & run artifacts (gitignored)
+└── tests/                             # 19 comprehensive pytest unit & integration tests
 ```
 
 ---
 
-## Implementation Status
+## 🛡️ Key Defenses & Architectural Highlights
 
-- [ ] **Phase 1** — Core pipeline (LangGraph wiring, Ollama, Chroma, MCP server, end-to-end query)
-- [ ] **Phase 2** — Attack corpus + defense layer (heuristics + LLM judge)
-- [ ] **Phase 3** — Held-out set, mutations, eval harness
-- [ ] **Phase 4** — Streamlit dashboard + README polish
+- **Real Model Context Protocol (MCP)**: Implements standard FastMCP tools with canary secret exfiltration detection.
+- **LangGraph Supervisor with Loop-Back Edges**: Content retrieved from Chroma or returned by tools is routed through defense nodes before the supervisor or synthesizer ever inspects it.
+- **Objective Ground-Truth Evaluation**: ASR is evaluated against explicit ground-truth conditions (`canary_string_present_in_final_answer`, `unauthorized_send_email_call`, `contains_phrase:<phrase>`) rather than subjective LLM self-reporting.
+- **Full Traceability**: Every evaluation run captures exact git commit hashes, full trajectory logs, and counterfactual verdicts.
