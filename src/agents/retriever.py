@@ -29,4 +29,5 @@ def retriever_node(state: AgentState) -> dict[str, Any]:
 
     return {
         "raw_retrieved_chunks": raw_chunks,
+        "hop_count": state.get("hop_count", 0) + 1,
     }

@@ -48,4 +48,5 @@ def tool_agent_node(state: AgentState) -> dict[str, Any]:
     return {
         "raw_tool_outputs": raw_results,
         "unauthorized_tool_calls": unauthorized_calls,
+        "hop_count": state.get("hop_count", 0) + 1,
     }

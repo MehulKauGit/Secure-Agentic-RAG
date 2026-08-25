@@ -52,6 +52,7 @@ class AgentState(TypedDict):
 
     next_agent: Literal["retriever", "tool_agent", "synthesizer", "end"]
     plan: str
+    hop_count: int  # loop guard: incremented each retriever/tool_agent hop
     final_answer: str | None
 
     canary_leaked: bool

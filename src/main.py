@@ -28,6 +28,7 @@ def run_pipeline(
         "tool_flags": [],
         "next_agent": "retriever",
         "plan": "Initial orchestrator start",
+        "hop_count": 0,
         "final_answer": None,
         "canary_leaked": False,
         "unauthorized_tool_calls": [],

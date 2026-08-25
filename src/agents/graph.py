@@ -8,8 +8,13 @@ from src.defense.screen_retrieval import retrieval_screen_node
 from src.defense.screen_tool_output import tool_output_screen_node
 
 
+MAX_HOPS = 5
+
+
 def route_orchestrator(state: AgentState) -> str:
-    """Conditional router based on orchestrator decision."""
+    """Conditional router based on orchestrator decision, with infinite-loop guard."""
+    if state.get("hop_count", 0) >= MAX_HOPS:
+        return "synthesizer"  # force termination
     next_action = state.get("next_agent", "synthesizer")
     if next_action == "retriever":
         return "retriever"
