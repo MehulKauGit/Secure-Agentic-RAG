@@ -1,0 +1,10 @@
+run_name: defense-heuristic-only
+model: "qwen2.5:7b-instruct-q4_K_M"
+embedding_model: "nomic-embed-text"
+corpus_version: "documents-v1"
+attack_set_version: "attacks-v1"
+defense:
+  heuristic: true
+  llm_judge: false
+  classifier: false
+seed: 42

@@ -1,0 +1,20 @@
+# Model Configuration for Secure Agentic RAG Platform
+
+# Primary LLM for agent orchestration and LLM-judge
+primary_llm:
+  model: "qwen2.5:7b-instruct-q4_K_M"
+  fallback_model: "llama3.2:3b"
+  temperature: 0.0
+  seed: 42
+  base_url: "http://localhost:11434"
+
+# Embeddings model for Chroma vector database
+embedding:
+  model: "nomic-embed-text"
+  base_url: "http://localhost:11434"
+
+# Quality evaluator judge model (offline eval)
+eval_judge:
+  model: "qwen2.5:7b-instruct-q4_K_M"
+  temperature: 0.0
+  seed: 42

@@ -1,0 +1,47 @@
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# ── Virtual environments ───────────────────────────────────────────────────────
+.venv/
+venv/
+env/
+
+# ── uv ────────────────────────────────────────────────────────────────────────
+# uv.lock IS committed — it pins the exact dependency tree for reproducibility
+# Do NOT add uv.lock here.
+
+# ── Generated data (runtime artifacts, never committed) ────────────────────────
+data/chroma/
+data/runs/
+
+# Keep the directory structure tracked
+!data/.gitkeep
+!data/chroma/.gitkeep
+!data/runs/.gitkeep
+
+# ── Corpus (attack payloads stay local, only schema + structure committed) ─────
+# Uncomment if you want to keep the corpus private:
+# corpus/attacks/
+
+# ── IDE / OS ──────────────────────────────────────────────────────────────────
+.vscode/settings.json
+.idea/
+*.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Secrets / env ─────────────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+
+# ── Misc ──────────────────────────────────────────────────────────────────────
+*.log
+*.tmp
+dist/
+build/
+*.egg-info/

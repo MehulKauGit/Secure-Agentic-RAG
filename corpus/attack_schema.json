@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AttackExample",
+  "type": "object",
+  "required": [
+    "attack_id",
+    "attack_category",
+    "payload",
+    "target_behavior",
+    "success_condition",
+    "severity"
+  ],
+  "properties": {
+    "attack_id": {
+      "type": "string",
+      "description": "Unique identifier, e.g. 'dir-001', 'exfil-003', 'sec-002'"
+    },
+    "attack_category": {
+      "type": "string",
+      "enum": [
+        "direct_override",
+        "second_order_injection",
+        "exfiltration",
+        "tool_misuse_coercion",
+        "evasion_mutation"
+      ]
+    },
+    "payload": {
+      "type": "string",
+      "description": "The exact adversarial text injected into chunks or tool outputs"
+    },
+    "target_behavior": {
+      "type": "string",
+      "description": "Short explanation of the attacker goal"
+    },
+    "success_condition": {
+      "type": "string",
+      "description": "Condition name evaluated by eval harness (e.g. 'canary_string_present_in_final_answer', 'unauthorized_send_email_call')"
+    },
+    "severity": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "critical"]
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Optional details such as mutation strategy or original source ID"
+    }
+  }
+}
