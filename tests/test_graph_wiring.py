@@ -1,5 +1,4 @@
-from src.agents.graph import build_secure_rag_graph, graph_app
-from src.agents.state import AgentState
+from src.agents.graph import build_secure_rag_graph
 
 
 def test_graph_compilation():

@@ -28,7 +28,7 @@ def calculate(expression: str) -> str:
         return "Error: Unsupported or unsafe characters in arithmetic expression."
     
     try:
-        result = eval(cleaned, safe_dict)  # noqa: S307
+        result = eval(cleaned, safe_dict)
         return str(result)
     except Exception as e:
-        return f"Error evaluating expression '{expression}': {str(e)}"
+        return f"Error evaluating expression '{expression}': {e!s}"

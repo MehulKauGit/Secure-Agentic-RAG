@@ -1,8 +1,8 @@
-from datetime import datetime, timezone
-import hashlib
-from pathlib import Path
 import subprocess
+from datetime import UTC, datetime
+from pathlib import Path
 from typing import Any
+
 import yaml
 
 CONFIGS_DIR = Path(__file__).resolve().parents[2] / "configs" / "experiments"
@@ -34,7 +34,7 @@ def load_experiment_config(config_path_or_name: str) -> dict[str, Any]:
     if not p.exists():
         raise FileNotFoundError(f"Experiment config not found: '{config_path_or_name}'")
 
-    with open(p, "r", encoding="utf-8") as f:
+    with open(p, encoding="utf-8") as f:
         config = yaml.safe_load(f) or {}
 
     config["git_commit"] = get_git_commit_hash()
@@ -44,7 +44,7 @@ def load_experiment_config(config_path_or_name: str) -> dict[str, Any]:
 def create_run_directory(config: dict[str, Any]) -> tuple[str, Path]:
     """Generates a unique run_id and creates data/runs/{run_id}/."""
     run_name = config.get("run_name", "experiment")
-    ts = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+    ts = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
     run_id = f"{run_name}_{ts}"
 
     run_dir = DATA_RUNS_DIR / run_id

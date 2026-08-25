@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 from typing import Any
+
 import jsonschema
 
 CORPUS_ROOT = Path(__file__).resolve().parents[2] / "corpus"
@@ -8,7 +9,7 @@ SCHEMA_PATH = CORPUS_ROOT / "attack_schema.json"
 
 
 def load_attack_schema() -> dict[str, Any]:
-    with open(SCHEMA_PATH, "r", encoding="utf-8") as f:
+    with open(SCHEMA_PATH, encoding="utf-8") as f:
         return json.load(f)
 
 
@@ -22,7 +23,7 @@ def load_attacks_from_dir(directory: Path | str, validate: bool = True) -> list[
     attacks = []
 
     for file_path in target_dir.glob("*.json"):
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             data = json.load(f)
             items = data if isinstance(data, list) else [data]
             for item in items:

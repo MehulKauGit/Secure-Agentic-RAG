@@ -1,8 +1,8 @@
 import json
 import logging
-from typing import Any
+
 from langchain_ollama import ChatOllama
-from src.agents.state import DefenseVerdict
+
 from src.defense.heuristics import load_defense_config
 
 logger = logging.getLogger(__name__)
@@ -48,4 +48,4 @@ class LLMJudge:
             return is_malicious, reasoning
         except Exception as e:
             logger.warning("LLM Judge invocation failed (fallback pass): %s", e)
-            return False, f"Judge unavailable ({str(e)})"
+            return False, f"Judge unavailable ({e!s})"

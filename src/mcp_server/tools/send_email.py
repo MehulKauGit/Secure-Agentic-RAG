@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 # In-memory log of all invocations for trajectory tracking and security auditing
@@ -12,7 +12,7 @@ def send_email(recipient: str, subject: str, body: str) -> str:
     It logs all arguments for unauthorized invocation detection and canary exfiltration evaluation.
     """
     record = {
-        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "timestamp": datetime.now(UTC).isoformat(),
         "recipient": recipient,
         "subject": subject,
         "body": body,

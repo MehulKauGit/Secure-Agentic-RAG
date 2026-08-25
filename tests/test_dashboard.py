@@ -1,6 +1,5 @@
 import json
 from pathlib import Path
-from src.eval.metrics import compute_aggregate_metrics
 
 
 def test_dashboard_data_loading(tmp_path: Path):

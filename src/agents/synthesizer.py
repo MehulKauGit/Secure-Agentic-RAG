@@ -1,7 +1,9 @@
 import logging
 from typing import Any
+
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_ollama import ChatOllama
+
 from src.agents.state import AgentState
 from src.mcp_server.canary import is_canary_leaked
 

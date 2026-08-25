@@ -1,8 +1,8 @@
 import json
 from pathlib import Path
 from typing import Any
+
 import pandas as pd
-import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 
@@ -44,7 +44,7 @@ def load_all_runs() -> dict[str, dict[str, Any]]:
             summary_file = run_dir / "summary.json"
             if summary_file.exists():
                 try:
-                    with open(summary_file, "r", encoding="utf-8") as f:
+                    with open(summary_file, encoding="utf-8") as f:
                         runs[run_dir.name] = json.load(f)
                 except Exception:
                     pass
@@ -56,7 +56,7 @@ def load_trajectories(run_id: str) -> list[dict[str, Any]]:
     traj_file = DATA_RUNS_DIR / run_id / "trajectories.jsonl"
     trajectories = []
     if traj_file.exists():
-        with open(traj_file, "r", encoding="utf-8") as f:
+        with open(traj_file, encoding="utf-8") as f:
             for line in f:
                 if line.strip():
                     try:
@@ -236,7 +236,7 @@ with tab_categories:
 
     base_cats = base_run.get("per_category_asr", {})
     comp_cats = comp_run.get("per_category_asr", {})
-    all_cat_keys = sorted(list(set(base_cats.keys()).union(set(comp_cats.keys()))))
+    all_cat_keys = sorted(set(base_cats.keys()).union(set(comp_cats.keys())))
 
     cat_data = []
     for cat in all_cat_keys:

@@ -1,8 +1,9 @@
 import argparse
-import sys
+
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
+
 from src.agents.graph import graph_app
 from src.agents.state import AgentState
 from src.retrieval.ingest import ingest_documents

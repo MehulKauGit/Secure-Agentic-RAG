@@ -40,9 +40,7 @@ def retrieval_screen_node(state: AgentState) -> dict:
 
         # Check if we should enforce blocking
         blocked = False
-        if verdict["heuristic_flagged"] and defense_cfg.get("heuristic", False):
-            blocked = True
-        elif verdict.get("judge_flagged") and defense_cfg.get("llm_judge", False):
+        if (verdict["heuristic_flagged"] and defense_cfg.get("heuristic", False)) or (verdict.get("judge_flagged") and defense_cfg.get("llm_judge", False)):
             blocked = True
 
         if not blocked:

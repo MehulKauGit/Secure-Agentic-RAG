@@ -1,9 +1,10 @@
 from pathlib import Path
 from typing import Any
+
 import chromadb
 from chromadb.config import Settings
-from langchain_ollama import OllamaEmbeddings
 from langchain_core.embeddings import Embeddings
+from langchain_ollama import OllamaEmbeddings
 
 CHROMA_PERSIST_DIR = Path(__file__).resolve().parents[2] / "data" / "chroma"
 DEFAULT_COLLECTION_NAME = "secure_rag_docs"
@@ -88,7 +89,7 @@ class VectorStore:
             docs = results["documents"][0]
             metas = results["metadatas"][0] if results["metadatas"] else [{}] * len(docs)
             ids = results["ids"][0] if results["ids"] else [""] * len(docs)
-            distances = results["distances"][0] if "distances" in results and results["distances"] else [0.0] * len(docs)
+            distances = results["distances"][0] if results.get("distances") else [0.0] * len(docs)
 
             for doc_id, doc, meta, dist in zip(ids, docs, metas, distances):
                 output_chunks.append({

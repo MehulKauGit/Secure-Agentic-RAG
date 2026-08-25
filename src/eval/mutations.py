@@ -78,13 +78,18 @@ def generate_mutations(base_attacks: list[dict[str, Any]]) -> list[dict[str, Any
     return mutated_list
 
 
+_DEFAULT_MUTATIONS_PATH = (
+    Path(__file__).resolve().parents[2] / "corpus" / "attacks" / "mutations" / "mutated_attacks.json"
+)
+
+
 def write_mutations_file(
     base_attacks: list[dict[str, Any]],
-    output_path: Path | str = Path(__file__).resolve().parents[2] / "corpus" / "attacks" / "mutations" / "mutated_attacks.json",
+    output_path: Path | str | None = None,
 ) -> int:
     """Generates and persists mutated attacks to corpus/attacks/mutations/."""
+    out_p = Path(output_path) if output_path is not None else _DEFAULT_MUTATIONS_PATH
     mutations = generate_mutations(base_attacks)
-    out_p = Path(output_path)
     out_p.parent.mkdir(parents=True, exist_ok=True)
     with open(out_p, "w", encoding="utf-8") as f:
         json.dump(mutations, f, indent=2)

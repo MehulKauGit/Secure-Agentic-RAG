@@ -1,6 +1,7 @@
 """MCP Server exposing local tools for the Secure Agentic RAG Platform."""
 
 from mcp.server.fastmcp import FastMCP
+
 from src.mcp_server.tools.calculator import calculate
 from src.mcp_server.tools.file_lookup import file_lookup
 from src.mcp_server.tools.send_email import send_email

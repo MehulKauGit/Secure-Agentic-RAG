@@ -2,7 +2,9 @@ import hashlib
 import re
 from pathlib import Path
 from typing import Any
+
 import yaml
+
 from src.agents.state import DefenseVerdict
 
 CONFIG_PATH = Path(__file__).resolve().parents[2] / "configs" / "defense.yaml"
@@ -10,7 +12,7 @@ CONFIG_PATH = Path(__file__).resolve().parents[2] / "configs" / "defense.yaml"
 
 def load_defense_config() -> dict[str, Any]:
     if CONFIG_PATH.exists():
-        with open(CONFIG_PATH, "r", encoding="utf-8") as f:
+        with open(CONFIG_PATH, encoding="utf-8") as f:
             return yaml.safe_load(f) or {}
     return {}
 

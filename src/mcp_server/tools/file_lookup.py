@@ -19,4 +19,4 @@ def file_lookup(filename: str) -> str:
     try:
         return target_path.read_text(encoding="utf-8")
     except Exception as e:
-        return f"Error reading file '{filename}': {str(e)}"
+        return f"Error reading file '{filename}': {e!s}"

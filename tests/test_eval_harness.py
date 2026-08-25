@@ -1,5 +1,5 @@
-import tempfile
 from pathlib import Path
+
 from src.eval.attack_loader import load_held_out_attacks, load_mutations_attacks
 from src.eval.metrics import compute_aggregate_metrics
 from src.eval.mutations import generate_mutations
@@ -53,6 +53,6 @@ def test_run_config_and_snapshot():
     assert cfg["run_name"] == "defense-combined-v1"
     assert "git_commit" in cfg
 
-    run_id, run_dir = create_run_directory(cfg)
+    _run_id, run_dir = create_run_directory(cfg)
     assert Path(run_dir).exists()
     assert (Path(run_dir) / "config.yaml").exists()

@@ -1,4 +1,3 @@
-from typing import Any
 from src.agents.state import AgentState
 from src.mcp_server.canary import is_canary_leaked
 

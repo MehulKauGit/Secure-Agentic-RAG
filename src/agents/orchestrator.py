@@ -1,8 +1,10 @@
 import json
 import logging
 from typing import Any
+
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_ollama import ChatOllama
+
 from src.agents.state import AgentState
 
 logger = logging.getLogger(__name__)

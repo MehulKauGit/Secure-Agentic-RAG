@@ -1,5 +1,6 @@
 import hashlib
 from pathlib import Path
+
 from src.retrieval.vector_store import VectorStore
 
 DOCS_DIR = Path(__file__).resolve().parents[2] / "corpus" / "documents"
